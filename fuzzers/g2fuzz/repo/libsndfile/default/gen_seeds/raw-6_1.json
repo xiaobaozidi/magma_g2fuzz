@@ -1,0 +1,16 @@
+{
+    "camera_settings": {
+        "aperture": "f/4.6",
+        "shutter_speed": "1/4202s",
+        "iso": 3200
+    },
+    "exposure_info": {
+        "exposure_compensation": "-2.9 EV",
+        "white_balance": "Auto"
+    },
+    "other_data": {
+        "date_taken": "2023-10-10",
+        "location": "New York",
+        "photographer": "Alex Johnson"
+    }
+}

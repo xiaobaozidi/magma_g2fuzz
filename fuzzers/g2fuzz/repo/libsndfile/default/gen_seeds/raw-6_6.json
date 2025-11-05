@@ -1,0 +1,16 @@
+{
+    "camera_settings": {
+        "aperture": "f/9.6",
+        "shutter_speed": "1/3030s",
+        "iso": 800
+    },
+    "exposure_info": {
+        "exposure_compensation": "2.9 EV",
+        "white_balance": "Fluorescent"
+    },
+    "other_data": {
+        "date_taken": "2023-10-10",
+        "location": "Tokyo",
+        "photographer": "Alex Johnson"
+    }
+}
