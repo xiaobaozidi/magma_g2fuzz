@@ -26,8 +26,10 @@ def save_responses_to_folder(responses, target_folder):
 def worker(params):
     """处理单个任务并捕获异常"""
     try:
-        # 假设llm函数接收多个参数，params是参数元组
-        result = llm(*params)
+        model, prompt, reasoning_effort, cost_file_path = params
+        # Set temperature based on reasoning_effort
+        temperature = 1
+        result = llm(model, prompt, temperature)
         return (True, result)
     except Exception as e:
         return (False, str(e))
