@@ -39,4 +39,4 @@ update-alternatives \
 
 apt-get update && apt-get install -y python3 python3-dev python3-pip python-is-python3
 python3 -m pip install --upgrade pip setuptools wheel
-python3 -m pip install --no-cache-dir openai==1.63.2
+python3 -m pip install --no-cache-dir google-auth google-genai openai anthropic
