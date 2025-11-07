@@ -1,0 +1,5 @@
+<?php
+
+Foo \ Bar \ Baz;
+
+?>

@@ -1,0 +1,24 @@
+--- a/ext/intl/breakiterator/codepointiterator_internal.cpp
++++ b/ext/intl/breakiterator/codepointiterator_internal.cpp
+@@ -73,7 +73,7 @@ CodePointBreakIterator::~CodePointBreakIterator()
+        clearCurrentCharIter();
+ }
+
+-UBool CodePointBreakIterator::operator==(const BreakIterator& that) const
++bool CodePointBreakIterator::operator==(const BreakIterator& that) const
+ {
+        if (typeid(*this) != typeid(that)) {
+                return false;
+diff --git a/ext/intl/breakiterator/codepointiterator_internal.h b/ext/intl/breakiterator/codepointiterator_internal.h
+index 43ec79d0b77..d92a793f5dc 100644
+--- a/ext/intl/breakiterator/codepointiterator_internal.h
++++ b/ext/intl/breakiterator/codepointiterator_internal.h
+@@ -37,7 +37,7 @@ namespace PHP {
+ 
+ 		virtual ~CodePointBreakIterator();
+ 
+-		virtual UBool operator==(const BreakIterator& that) const;
++		virtual bool operator==(const BreakIterator& that) const;
+ 
+ 		virtual CodePointBreakIterator* clone(void) const;
+ 

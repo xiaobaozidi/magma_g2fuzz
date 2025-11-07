@@ -1,1 +1,1 @@
-PROGRAMS=(json)
+PROGRAMS=(json exif unserialize parser)

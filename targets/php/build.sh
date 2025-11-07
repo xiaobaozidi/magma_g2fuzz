@@ -13,18 +13,6 @@ if [ ! -d "$TARGET/repo" ]; then
     exit 1
 fi
 
-
-if [[ $FUZZER = *lyso* ]] || [[ $FUZZER = *fishfuzz* ]] || [[ $FUZZER = *fuzzchella* ]]; then
-    export LIBS="-l:magma.o -lrt -l:afl_driver.o -lstdc++ -l:afl-llvm-rt.o"
-    echo "LIBS variable set to $LIBS"
-fi
-
-if [[ $FUZZER = *reach* ]] ; then
-    export LIBS="-l:magma.o -lrt -l:afl_driver.o -lstdc++"
-    echo "LIBS variable set to $LIBS"
-fi
-
-
 cd "$TARGET/repo"
 export ONIG_CFLAGS="-I$PWD/oniguruma/src"
 export ONIG_LIBS="-L$PWD/oniguruma/src/.libs -l:libonig.a"
@@ -33,8 +21,12 @@ export ONIG_LIBS="-L$PWD/oniguruma/src/.libs -l:libonig.a"
 export EXTRA_CFLAGS="$CFLAGS -fno-sanitize=object-size"
 export EXTRA_CXXFLAGS="$CXXFLAGS -fno-sanitize=object-size"
 
+OLD_CFLAGS=$CFLAGS
 unset CFLAGS
-unset CXXFLAGS
+# We are building with other afl based fuzzer, apply the original version
+if [ -n "$OTHER_FUZZER" ]; then
+    unset CXXFLAGS
+fi
 
 #build the php library
 ./buildconf
@@ -54,22 +46,34 @@ LIB_FUZZING_ENGINE="-Wall" ./configure \
 make -j$(nproc) clean
 
 # build oniguruma and link statically
+if [ ! -n "$OTHER_FUZZER" ]; then
+    export CFLAGS=$OLD_CFLAGS
+fi
+
 pushd oniguruma
 autoreconf -vfi
 ./configure --disable-shared
 make -j$(nproc)
 popd
+if [ ! -n "$OTHER_FUZZER" ]; then
+    unset CFLAGS
+fi
 
 make -j$(nproc)
 
 # Generate seed corpora
-sapi/cli/php sapi/fuzzer/generate_execute_corpus.php
 sapi/cli/php sapi/fuzzer/generate_unserialize_dict.php
 sapi/cli/php sapi/fuzzer/generate_parser_corpus.php
 
-FUZZERS="php-fuzz-json php-fuzz-exif php-fuzz-mbstring php-fuzz-unserialize php-fuzz-parser php-fuzz-execute"
+FUZZERS="php-fuzz-json php-fuzz-exif php-fuzz-mbstring php-fuzz-unserialize php-fuzz-parser"
 for fuzzerName in $FUZZERS; do
 	cp sapi/fuzzer/$fuzzerName "$OUT/${fuzzerName/php-fuzz-/}"
+    if [ -f "sapi/fuzzer/${fuzzerName}.0.0.preopt.bc" ]; then
+        ls sapi/fuzzer/${fuzzerName}.*.bc | while read f; do
+            fn=$(basename $f)
+            cp $f "$OUT/${fn/php-fuzz-/}"
+        done
+    fi
 done
 
 for fuzzerName in `ls sapi/fuzzer/corpus`; do
