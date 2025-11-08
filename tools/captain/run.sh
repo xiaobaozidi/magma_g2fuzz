@@ -246,11 +246,14 @@ for FUZZER in "${FUZZERS[@]}"; do
 
         # build the Docker image
         IMG_NAME="magma/$FUZZER/$TARGET"
-        echo_time "Building $IMG_NAME"
-        if ! "$MAGMA"/tools/captain/build.sh &> \
-            "${LOGDIR}/${FUZZER}_${TARGET}_build.log"; then
-            echo_time "Failed to build $IMG_NAME. Check build log for info."
-            continue
+        if docker image inspect "$IMG_NAME" > /dev/null 2>&1; then
+            echo_time "Docker image $IMG_NAME already exists. Skipping build."
+        else
+            if ! "$MAGMA"/tools/captain/build.sh &> \
+                "${LOGDIR}/${FUZZER}_${TARGET}_build.log"; then
+                echo_time "Failed to build $IMG_NAME. Check build log for info."
+                continue
+            fi
         fi
 
         PROGRAMS=($(get_var_or_default $FUZZER $TARGET 'PROGRAMS'))

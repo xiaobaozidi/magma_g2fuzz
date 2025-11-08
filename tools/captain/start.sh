@@ -1,4 +1,4 @@
-#!/bin/bash -e
+#!/bin/bash -ex
 
 ##
 # Pre-requirements:
@@ -51,6 +51,10 @@ if [ ! -z "$SHARED" ]; then
     flag_volume="--volume=$SHARED:/magma_shared"
 fi
 
+# default to the in-container runner if ENTRYPOINT not provided
+ENTRYPOINT=${ENTRYPOINT:-/magma/magma/run.sh}
+flag_ep="--entrypoint=$ENTRYPOINT"
+
 if [ -t 1 ]; then
     docker run -it $flag_volume \
         --cap-add=SYS_PTRACE --security-opt seccomp=unconfined \
@@ -63,7 +67,6 @@ else
         --cap-add=SYS_PTRACE --security-opt seccomp=unconfined \
         --env=PROGRAM="$PROGRAM" --env=ARGS="$ARGS" \
         --env=FUZZARGS="$FUZZARGS" --env=POLL="$POLL" --env=TIMEOUT="$TIMEOUT" \
-        --network=bridge \
         $flag_aff $flag_ep "$IMG_NAME"
     )
     container_id=$(cut -c-12 <<< $container_id)
