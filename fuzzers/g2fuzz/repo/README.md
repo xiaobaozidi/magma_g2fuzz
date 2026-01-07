@@ -8,23 +8,73 @@ We have implemented G2FUZZ on the latest version of AFL++ (AFL++-4.32c).
 # How to use it
 ## Step I: Preparation
 ### Install the dependency libraries
-```
+
+For OpenAI models:
+```bash
 pip install openai==1.63.2
 ```
 
-### prepare the setting files
+For Claude models:
+```bash
+pip install anthropic
 ```
+
+### Prepare the setting files
+```bash
 cd evaluation_path
 git clone https://github.com/G2FUZZ/G2FUZZ
-cp ./G2FUZZ/openai_key.txt .
 cp ./G2FUZZ/program_to_format.json .
 cp ./G2FUZZ/model_setting.json .
 ```
 
-Then, you need to set up these three files:
-- `openai_key.txt`: The OpenAI key.
+### Configure API keys
+
+**Option 1: Using OpenAI**
+```bash
+cp ./G2FUZZ/openai_key.txt .
+# Edit openai_key.txt with your OpenAI API key
+```
+Get your OpenAI API key from: https://platform.openai.com/api-keys
+
+**Option 2: Using Claude**
+```bash
+# Create anthropic_key.txt with your Anthropic API key
+echo "your-anthropic-api-key-here" > anthropic_key.txt
+```
+Get your Anthropic API key from: https://console.anthropic.com/settings/keys
+
+**Option 3: Using environment variables**
+```bash
+export OPENAI_API_KEY="your-openai-key"
+# OR
+export ANTHROPIC_API_KEY="your-anthropic-key"
+```
+
+### Configure model settings
+
+Edit `model_setting.json` to specify which model to use:
+
+For OpenAI models:
+```json
+{
+    "model": ["gpt-4o"]
+}
+```
+
+For Claude models:
+```json
+{
+    "model": ["claude-sonnet-4-5"]
+}
+```
+
+**Supported models:**
+- OpenAI: `gpt-3.5-turbo`, `gpt-4`, `gpt-4o`, `gpt-4o-mini`, `gpt-5-mini`, `o1`, `o1-mini`, `o3-mini`, etc.
+- Claude: `claude-sonnet-4-5`, `claude-3-5-sonnet-latest`, `claude-3-5-haiku-latest`, `claude-opus-4`
+
+**Additional configuration files:**
 - `program_to_format.json`: The target program and its expected input formats.
-- `model_setting.json`: The model we used.
+- `model_setting.json`: The model to use.
 
 ### Compile G2FUZZ and target program
 The compilation method for G2FUZZ is the same as that for AFL++: `make source-only`.

@@ -1,2 +1,3 @@
 tools/captain/workdir/
 fuzzers/g2fuzz/repo/openai_key.txt
+fuzzers/g2fuzz/repo/anthropic_key.txt
