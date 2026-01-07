@@ -31,11 +31,12 @@ for i in $OUT/*.dict $OUT/*.dic $OUT/afl/*.dict $OUT/afl/*.dic; do
 done
 
 cp $FUZZER/repo/openai_key.txt .
+cp $FUZZER/repo/anthropic_key.txt .
 cp $FUZZER/repo/program_to_format.json .
 cp $FUZZER/repo/model_setting.json .
 
 python $FUZZER/repo/program_gen.py --output "$SHARED/findings" --program $PROGRAM
-
-"$FUZZER/repo/afl-fuzz" -d -t 1000+ -m none -i "$SHARED/findings/default/gen_seeds/" -k "$FUZZER/repo" -o "$SHARED/findings" \
+cp "$SHARED/findings/default/gen_seeds/*" "$TARGET/corpus/${PROGRAM}"
+"$FUZZER/repo/afl-fuzz" -d -t 1000+ -m none -i "$TARGET/corpus/${PROGRAM}" -k "$FUZZER/repo" -o "$SHARED/findings" \
     "${flag_cmplog[@]}" \
     $DICT $FUZZARGS -- "$OUT/afl/$PROGRAM" $ARGS 2>&1
