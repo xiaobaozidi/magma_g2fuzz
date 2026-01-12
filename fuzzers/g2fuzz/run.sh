@@ -36,7 +36,7 @@ cp $FUZZER/repo/program_to_format.json .
 cp $FUZZER/repo/model_setting.json .
 
 python $FUZZER/repo/program_gen.py --output "$SHARED/findings" --program $PROGRAM
-cp "$SHARED/findings/default/gen_seeds/*" "$TARGET/corpus/${PROGRAM}"
+cp "$SHARED/findings/default/gen_seeds/"* "$TARGET/corpus/${PROGRAM}"
 "$FUZZER/repo/afl-fuzz" -d -t 1000+ -m none -i "$TARGET/corpus/${PROGRAM}" -k "$FUZZER/repo" -o "$SHARED/findings" \
     "${flag_cmplog[@]}" \
     $DICT $FUZZARGS -- "$OUT/afl/$PROGRAM" $ARGS 2>&1
